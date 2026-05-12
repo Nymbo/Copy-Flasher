@@ -1,7 +1,7 @@
 {
-	"id": "copy-flasher",
-	"name": "Copy Flasher",
-	"version": "0.1.3",
+	"id": "copy-highlighter",
+	"name": "Copy Highlighter",
+	"version": "0.2.0",
 	"minAppVersion": "0.16.0",
 	"description": "Highlights copied text in Obsidian.",
 	"author": "Nymbo",

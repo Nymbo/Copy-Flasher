@@ -1,6 +1,6 @@
 {
-	"name": "copy-flasher",
-	"version": "0.1.3",
+	"name": "copy-highlighter",
+	"version": "0.2.0",
 	"description": "Highlights copied text in Obsidian.",
 	"main": "main.js",
 	"type": "module",

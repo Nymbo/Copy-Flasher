@@ -6,7 +6,7 @@ const LOST_KEYUP_FALLBACK_MS = 5000;
 const NON_KEYBOARD_COPY_FALLBACK_MS = 650;
 const MAX_DOM_FLASH_RECTS = 80;
 
-interface CopyFlasherSettings {
+interface CopyHighlighterSettings {
 	highlightColor: string;
 	editorOpacity: number;
 	renderedOpacity: number;
@@ -23,7 +23,7 @@ type FlashRange = {
 
 type ClearHighlight = () => void;
 
-const DEFAULT_SETTINGS: CopyFlasherSettings = {
+const DEFAULT_SETTINGS: CopyHighlighterSettings = {
 	highlightColor: "#ffd54f",
 	editorOpacity: 0.5,
 	renderedOpacity: 0.46,
@@ -37,7 +37,7 @@ const addFlash = StateEffect.define<FlashRange[]>();
 const clearFlash = StateEffect.define<void>();
 
 const flashMark = Decoration.mark({
-	class: "copy-flasher-editor-highlight",
+	class: "copy-highlighter-editor-highlight",
 });
 
 const flashField = StateField.define<DecorationSet>({
@@ -76,7 +76,7 @@ class HighlightSession {
 	private cDown = false;
 	private fallbackTimer: number | null = null;
 
-	constructor(private getSettings: () => CopyFlasherSettings) {}
+	constructor(private getSettings: () => CopyHighlighterSettings) {}
 
 	register(clearHighlight: ClearHighlight) {
 		this.clearers.add(clearHighlight);
@@ -208,15 +208,15 @@ function copyFlashExtension(highlightSession: HighlightSession) {
 	];
 }
 
-export default class CopyFlasherPlugin extends Plugin {
-	settings: CopyFlasherSettings = DEFAULT_SETTINGS;
+export default class CopyHighlighterPlugin extends Plugin {
+	settings: CopyHighlighterSettings = DEFAULT_SETTINGS;
 	private highlightSession = new HighlightSession(() => this.settings);
 	private domHighlights = new Set<HTMLElement>();
 
 	async onload() {
 		await this.loadSettings();
 		this.applyCssVariables();
-		this.addSettingTab(new CopyFlasherSettingTab(this.app, this));
+		this.addSettingTab(new CopyHighlighterSettingTab(this.app, this));
 
 		this.highlightSession.register(() => {
 			this.clearDomHighlights();
@@ -251,8 +251,8 @@ export default class CopyFlasherPlugin extends Plugin {
 
 	onunload() {
 		this.clearDomHighlights();
-		document.body.style.removeProperty("--copy-flasher-editor-background");
-		document.body.style.removeProperty("--copy-flasher-border-radius");
+		document.body.style.removeProperty("--copy-highlighter-editor-background");
+		document.body.style.removeProperty("--copy-highlighter-border-radius");
 	}
 
 	private flashDomSelection(event: ClipboardEvent) {
@@ -301,7 +301,7 @@ export default class CopyFlasherPlugin extends Plugin {
 		for (const rect of rects) {
 			const overlay = document.createElement("div");
 
-			overlay.className = "copy-flasher-dom-highlight";
+			overlay.className = "copy-highlighter-dom-highlight";
 			overlay.style.left = `${rect.left + window.scrollX}px`;
 			overlay.style.top = `${rect.top + window.scrollY}px`;
 			overlay.style.width = `${rect.width}px`;
@@ -326,7 +326,7 @@ export default class CopyFlasherPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<CopyFlasherSettings>);
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<CopyHighlighterSettings>);
 	}
 
 	async saveSettings() {
@@ -341,18 +341,18 @@ export default class CopyFlasherPlugin extends Plugin {
 
 	private applyCssVariables() {
 		document.body.style.setProperty(
-			"--copy-flasher-editor-background",
+			"--copy-highlighter-editor-background",
 			hexToRgba(this.settings.highlightColor, this.settings.editorOpacity)
 		);
 		document.body.style.setProperty(
-			"--copy-flasher-border-radius",
+			"--copy-highlighter-border-radius",
 			`${this.settings.borderRadius}px`
 		);
 	}
 }
 
-class CopyFlasherSettingTab extends PluginSettingTab {
-	constructor(app: App, private plugin: CopyFlasherPlugin) {
+class CopyHighlighterSettingTab extends PluginSettingTab {
+	constructor(app: App, private plugin: CopyHighlighterPlugin) {
 		super(app, plugin);
 	}
 

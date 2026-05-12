@@ -1,6 +1,6 @@
-# Copy Flasher
+# Copy Highlighter
 
-Copy Flasher highlights text when you copy it in Obsidian, giving a clear visual confirmation that the copy action worked.
+Copy Highlighter highlights text when you copy it in Obsidian, giving a clear visual confirmation that the copy action worked.
 
 ## Features
 
@@ -14,11 +14,11 @@ Copy Flasher highlights text when you copy it in Obsidian, giving a clear visual
 
 Select text in Obsidian and copy it. The selected text is highlighted while the copy shortcut is held, then returns to normal when the keys are released.
 
-For mouse or menu-based copy actions, Copy Flasher uses a short configurable fallback duration because there is no keyboard release event to observe.
+For mouse or menu-based copy actions, Copy Highlighter uses a short configurable fallback duration because there is no keyboard release event to observe.
 
 ## Settings
 
-Open **Settings -> Community plugins -> Copy Flasher** to customize:
+Open **Settings -> Community plugins -> Copy Highlighter** to customize:
 
 - Highlight color
 - Editor opacity
@@ -30,7 +30,7 @@ Open **Settings -> Community plugins -> Copy Flasher** to customize:
 
 ## Privacy and permissions
 
-Copy Flasher runs entirely inside Obsidian. It does not collect data, send network requests, read your clipboard contents, or access files directly.
+Copy Highlighter runs entirely inside Obsidian. It does not collect data, send network requests, read your clipboard contents, or access files directly.
 
 ## Development
 

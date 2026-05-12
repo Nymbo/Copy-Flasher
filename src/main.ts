@@ -224,35 +224,35 @@ export default class CopyHighlighterPlugin extends Plugin {
 
 		this.registerEditorExtension(copyFlashExtension(this.highlightSession));
 
-		this.registerDomEvent(document, "keydown", (event) => {
+		this.registerDomEvent(activeDocument, "keydown", (event) => {
 			this.highlightSession.handleKeyDown(event);
 		}, true);
 
-		this.registerDomEvent(document, "keyup", (event) => {
+		this.registerDomEvent(activeDocument, "keyup", (event) => {
 			this.highlightSession.handleKeyUp(event);
 		}, true);
 
-		this.registerDomEvent(window, "blur", () => {
+		this.registerDomEvent(activeWindow, "blur", () => {
 			this.highlightSession.resetKeys();
 		});
 
-		this.registerDomEvent(document, "visibilitychange", () => {
-			if (document.visibilityState === "hidden") {
+		this.registerDomEvent(activeDocument, "visibilitychange", () => {
+			if (activeDocument.visibilityState === "hidden") {
 				this.highlightSession.resetKeys();
 			}
 		});
 
 		// CodeMirror handles editor selections. This fallback covers copied text in
 		// rendered Markdown or other Obsidian-owned DOM content.
-		this.registerDomEvent(document, "copy", (event) => {
+		this.registerDomEvent(activeDocument, "copy", (event) => {
 			this.flashDomSelection(event);
 		}, true);
 	}
 
 	onunload() {
 		this.clearDomHighlights();
-		document.body.style.removeProperty("--copy-highlighter-editor-background");
-		document.body.style.removeProperty("--copy-highlighter-border-radius");
+		activeDocument.body.style.removeProperty("--copy-highlighter-editor-background");
+		activeDocument.body.style.removeProperty("--copy-highlighter-border-radius");
 	}
 
 	private flashDomSelection(event: ClipboardEvent) {
@@ -270,7 +270,7 @@ export default class CopyHighlighterPlugin extends Plugin {
 			return;
 		}
 
-		const selection = window.getSelection();
+		const selection = target.ownerDocument.getSelection();
 
 		if (selection === null || selection.isCollapsed || selection.rangeCount === 0) {
 			return;
@@ -299,11 +299,13 @@ export default class CopyHighlighterPlugin extends Plugin {
 			.slice(0, MAX_DOM_FLASH_RECTS);
 
 		for (const rect of rects) {
-			const overlay = document.createElement("div");
+			const ownerDocument = range.commonAncestorContainer.ownerDocument ?? activeDocument;
+			const ownerWindow = ownerDocument.defaultView ?? activeWindow;
+			const overlay = ownerDocument.createElement("div");
 
 			overlay.className = "copy-highlighter-dom-highlight";
-			overlay.style.left = `${rect.left + window.scrollX}px`;
-			overlay.style.top = `${rect.top + window.scrollY}px`;
+			overlay.style.left = `${rect.left + ownerWindow.scrollX}px`;
+			overlay.style.top = `${rect.top + ownerWindow.scrollY}px`;
 			overlay.style.width = `${rect.width}px`;
 			overlay.style.height = `${rect.height}px`;
 			overlay.style.backgroundColor = hexToRgba(
@@ -312,7 +314,7 @@ export default class CopyHighlighterPlugin extends Plugin {
 			);
 			overlay.style.borderRadius = `${this.settings.borderRadius}px`;
 
-			document.body.appendChild(overlay);
+			ownerDocument.body.appendChild(overlay);
 			this.domHighlights.add(overlay);
 		}
 	}
@@ -340,11 +342,11 @@ export default class CopyHighlighterPlugin extends Plugin {
 	}
 
 	private applyCssVariables() {
-		document.body.style.setProperty(
+		activeDocument.body.style.setProperty(
 			"--copy-highlighter-editor-background",
 			hexToRgba(this.settings.highlightColor, this.settings.editorOpacity)
 		);
-		document.body.style.setProperty(
+		activeDocument.body.style.setProperty(
 			"--copy-highlighter-border-radius",
 			`${this.settings.borderRadius}px`
 		);

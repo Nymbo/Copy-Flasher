@@ -1,0 +1,10 @@
+{
+	"id": "copy-flasher",
+	"name": "Copy Flasher",
+	"version": "0.1.0",
+	"minAppVersion": "0.15.0",
+	"description": "Briefly highlights text copied inside Obsidian.",
+	"author": "Nymbo",
+	"authorUrl": "https://github.com/Nymbo",
+	"isDesktopOnly": false
+}

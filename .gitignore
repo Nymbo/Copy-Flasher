@@ -3,3 +3,4 @@ main.js
 *.map
 .obsidian/
 .DS_Store
+data.json
